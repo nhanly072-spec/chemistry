@@ -1,131 +1,360 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Thí nghiệm Hóa học</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0b1728;
-      color: white;
-      text-align: center;
-      padding: 20px;
-    }
-    .lab {
-      max-width: 600px;
-      margin: 30px auto;
-      padding: 25px;
-      background: #152a40;
-      border-radius: 16px;
-    }
-    .tube {
-      width: 120px;
-      height: 200px;
-      border: 4px solid #b9eeff;
-      border-top: 0;
-      border-radius: 0 0 25px 25px;
-      margin: 25px auto;
-      position: relative;
-      overflow: hidden;
-    }
-    .liquid {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 60%;
-      background: #71dfff44;
-      transition: 0.8s;
-    }
-    .precipitate {
-      position: absolute;
-      bottom: 0;
-      width: 100%;
-      height: 0;
-      background: #ffffff;
-      opacity: 0.9;
-      transition: 0.8s;
-    }
-    button {
-      padding: 12px;
-      margin: 5px;
-      border: 0;
-      border-radius: 8px;
-      background: #159dcc;
-      color: white;
-      cursor: pointer;
-    }
-    #result { line-height: 1.7; }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phòng thí nghiệm Hóa học</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 24px 16px 70px;
+  font-family: Arial, sans-serif;
+  color: #edf6ff;
+  text-align: center;
+  background: radial-gradient(ellipse at top, #183b5b, #07111f 75%);
+}
+
+h1 { color: #71dcff; margin-bottom: 8px; }
+.subtitle { color: #a9c3d9; margin-bottom: 24px; }
+
+.lab {
+  max-width: 720px;
+  margin: auto;
+  padding: 24px;
+  background: #10253a;
+  border: 1px solid #31516d;
+  border-radius: 20px;
+  box-shadow: 0 12px 40px #0005;
+}
+
+h2 { margin-top: 0; }
+
+.tube {
+  width: 130px;
+  height: 210px;
+  margin: 28px auto;
+  position: relative;
+  overflow: hidden;
+  border: 4px solid #b9eaff;
+  border-top: 0;
+  border-radius: 0 0 28px 28px;
+  background: #ffffff08;
+}
+
+.liquid {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 0;
+  background: linear-gradient(#7ee4ff55, #38b9ee88);
+  transition: height .5s;
+}
+
+.solid {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 0;
+  opacity: 0;
+  background: #f4f4ee;
+  border-radius: 45% 45% 0 0;
+  transition: height .5s, opacity .5s;
+  box-shadow: 0 -4px 12px #ffffff55;
+}
+
+.buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+  margin: 16px 0;
+}
+
+button {
+  padding: 12px 15px;
+  border: 1px solid #4a7697;
+  border-radius: 10px;
+  background: #174768;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+button:hover:not(:disabled) {
+  background: #167ca8;
+  transform: translateY(-1px);
+}
+
+button:disabled {
+  opacity: .4;
+  cursor: not-allowed;
+}
+
+.primary {
+  background: #087da8;
+  border-color: #36bce9;
+}
+
+.secondary { background: #26394d; }
+
+#result {
+  margin-top: 20px;
+  padding: 16px;
+  min-height: 100px;
+  border-radius: 12px;
+  background: #071827;
+  border: 1px solid #29465d;
+  line-height: 1.8;
+  text-align: left;
+  overflow-wrap: anywhere;
+}
+
+.equation {
+  display: block;
+  margin-top: 8px;
+  color: #8be5ff;
+}
+
+.status {
+  color: #9dbbd0;
+  font-size: 13px;
+}
+
+.designer {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
+  color: #a9c3d9;
+  font-size: 13px;
+  opacity: .85;
+}
+
+</style>
 </head>
+
 <body>
-  <h1>⚗ Phòng thí nghiệm Hóa học</h1>
-  <div class="lab">
-    <h2>MgSO₄ – NaOH – H₂SO₄</h2>
 
-    <div class="tube">
-      <div class="liquid" id="liquid" style="height:0"></div>
-      <div class="precipitate" id="solid"></div>
-    </div>
+<h1>⚗ Phòng thí nghiệm Hóa học</h1>
+<p class="subtitle">Mô phỏng phản ứng hóa học tương tác</p>
 
-    <button onclick="addMg()">1. Thêm MgSO₄</button>
-    <button onclick="addNaOH()">2. Thêm NaOH</button>
-    <hr>
-    <h3>Chọn một nhánh riêng</h3>
-    <button onclick="addAcid()">Nhánh A: Thêm H₂SO₄</button>
-    <button onclick="addExcessBase()">Nhánh B: Thêm NaOH dư</button>
-    <button onclick="resetLab()">Làm lại</button>
+<div class="lab">
+  <h2>MgSO₄ – NaOH – H₂SO₄</h2>
+  <p class="status" id="step">Bước 0 / 3</p>
 
-    <div id="result">Bắt đầu thí nghiệm bằng cách thêm MgSO₄.</div>
+  <div class="tube">
+    <div class="liquid" id="liquid"></div>
+    <div class="solid" id="solid"></div>
   </div>
 
+  <h3>Thêm hóa chất</h3>
+  <div class="buttons">
+    <button class="primary" id="mgBtn" onclick="addMg()">
+      1. Thêm MgSO₄
+    </button>
+    <button class="primary" id="naohBtn" onclick="addNaOH()">
+      2. Thêm NaOH
+    </button>
+  </div>
+
+  <h3>Thử các nhánh phản ứng</h3>
+  <p class="status">
+    Sau khi có kết tủa, chọn một hóa chất để tiếp tục.
+  </p>
+
+  <div class="buttons">
+    <button onclick="addAcid()">🧪 Thêm H₂SO₄</button>
+    <button onclick="addExcessBase()">🧪 Thêm NaOH dư</button>
+  </div>
+
+  <div class="buttons">
+    <button class="secondary" onclick="undo()">↩ Quay lại</button>
+    <button class="secondary" onclick="resetLab()">⟳ Làm lại</button>
+    <button class="secondary" onclick="toggleSound()" id="soundBtn">
+      🔊 Âm thanh: Bật
+    </button>
+  </div>
+
+  <div id="result" aria-live="polite">
+    Bắt đầu bằng cách thêm MgSO₄.
+  </div>
+</div>
+
+<div class="designer">Designed by Thành Nhân</div>
+
 <script>
-  let step = 0;
-  let branch = null;
+const liquid = document.getElementById("liquid");
+const solid = document.getElementById("solid");
+const result = document.getElementById("result");
+const stepLabel = document.getElementById("step");
 
-  function addMg() {
-    if (step !== 0) return;
-    step = 1;
-    document.getElementById("liquid").style.height = "60%";
-    document.getElementById("result").innerHTML =
-      "Đã thêm MgSO₄. Dung dịch mô phỏng trong suốt.";
+let step = 0;
+let branch = null;
+let soundOn = true;
+let history = [];
+
+function saveState() {
+  history.push({
+    step,
+    branch,
+    liquid: liquid.style.height,
+    solidHeight: solid.style.height,
+    solidOpacity: solid.style.opacity,
+    result: result.innerHTML
+  });
+}
+
+function playSound(frequency = 650) {
+  if (!soundOn) return;
+
+  try {
+    const AudioContext =
+      window.AudioContext || window.webkitAudioContext;
+
+    const ctx = new AudioContext();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+
+    oscillator.type = "sine";
+    oscillator.frequency.value = frequency;
+    gain.gain.value = 0.045;
+
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+
+    oscillator.start();
+    gain.gain.exponentialRampToValueAtTime(
+      0.001, ctx.currentTime + 0.16
+    );
+    oscillator.stop(ctx.currentTime + 0.16);
+    oscillator.onended = () => ctx.close();
+  } catch (e) {}
+}
+
+function updateUI() {
+  stepLabel.textContent = "Bước " + step + " / 3";
+
+  document.getElementById("mgBtn").disabled = step !== 0;
+  document.getElementById("naohBtn").disabled = step !== 1;
+}
+
+function addMg() {
+  if (step !== 0) return;
+
+  saveState();
+  step = 1;
+  liquid.style.height = "60%";
+
+  result.innerHTML =
+    "Đã thêm MgSO₄. Dung dịch trong suốt, chưa xuất hiện kết tủa.";
+
+  playSound(550);
+  updateUI();
+}
+
+function addNaOH() {
+  if (step !== 1) return;
+
+  saveState();
+  step = 2;
+
+  solid.style.height = "35%";
+  solid.style.opacity = "1";
+
+  result.innerHTML =
+    "Xuất hiện kết tủa trắng Mg(OH)₂." +
+    '<span class="equation">' +
+    "MgSO₄ + 2NaOH → Mg(OH)₂↓ + Na₂SO₄" +
+    "</span>";
+
+  playSound(750);
+  updateUI();
+}
+
+function addAcid() {
+  if (step !== 2 || branch !== null) return;
+
+  saveState();
+  branch = "acid";
+  solid.style.height = "0";
+  solid.style.opacity = "0";
+
+  result.innerHTML =
+    "Nhánh A — Thêm H₂SO₄: kết tủa trắng tan dần." +
+    '<span class="equation">' +
+    "Mg(OH)₂ + H₂SO₄ → MgSO₄ + 2H₂O" +
+    "</span>";
+
+  playSound(850);
+}
+
+function addExcessBase() {
+  if (step !== 2 || branch !== null) return;
+
+  saveState();
+  branch = "base";
+
+  result.innerHTML =
+    "Nhánh B — Thêm NaOH dư: kết tủa trắng vẫn còn " +
+    "trong điều kiện dung dịch thông thường." +
+    '<span class="equation">' +
+    "Mg²⁺ + 2OH⁻ → Mg(OH)₂↓" +
+    "</span>";
+
+  playSound(450);
+}
+
+function undo() {
+  if (history.length === 0) {
+    result.textContent = "Đang ở bước đầu tiên rồi bro!";
+    return;
   }
 
-  function addNaOH() {
-    if (step !== 1) return;
-    step = 2;
-    document.getElementById("solid").style.height = "35%";
-    document.getElementById("result").innerHTML =
-      "Xuất hiện kết tủa trắng Mg(OH)₂.<br>" +
-      "MgSO₄ + 2NaOH → Mg(OH)₂↓ + Na₂SO₄";
-  }
+  const previous = history.pop();
 
-  function addAcid() {
-    if (step !== 2 || branch !== null) return;
-    branch = "acid";
-    document.getElementById("solid").style.height = "0";
-    document.getElementById("result").innerHTML =
-      "Nhánh A: kết tủa tan dần.<br>" +
-      "Mg(OH)₂ + H₂SO₄ → MgSO₄ + 2H₂O";
-  }
+  step = previous.step;
+  branch = previous.branch;
+  liquid.style.height = previous.liquid;
+  solid.style.height = previous.solidHeight;
+  solid.style.opacity = previous.solidOpacity;
+  result.innerHTML = previous.result;
 
-  function addExcessBase() {
-    if (step !== 2 || branch !== null) return;
-    branch = "base";
-    document.getElementById("result").innerHTML =
-      "Nhánh B: kết tủa trắng vẫn còn khi thêm NaOH dư " +
-      "trong điều kiện thông thường.<br>" +
-      "Mg²⁺ + 2OH⁻ → Mg(OH)₂↓";
-  }
+  updateUI();
+  playSound(400);
+}
 
-  function resetLab() {
-    step = 0;
-    branch = null;
-    document.getElementById("liquid").style.height = "0";
-    document.getElementById("solid").style.height = "0";
-    document.getElementById("result").textContent =
-      "Bắt đầu thí nghiệm bằng cách thêm MgSO₄.";
-  }
+function resetLab() {
+  step = 0;
+  branch = null;
+  history = [];
+
+  liquid.style.height = "0";
+  solid.style.height = "0";
+  solid.style.opacity = "0";
+
+  result.textContent = "Bắt đầu bằng cách thêm MgSO₄.";
+
+  updateUI();
+  playSound(500);
+}
+
+function toggleSound() {
+  soundOn = !soundOn;
+
+  document.getElementById("soundBtn").textContent =
+    soundOn ? "🔊 Âm thanh: Bật" : "🔇 Âm thanh: Tắt";
+
+  if (soundOn) playSound();
+}
+
+updateUI();
 </script>
+
 </body>
 </html>
