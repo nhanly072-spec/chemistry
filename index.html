@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thí nghiệm Hóa học</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b1728;
+      color: white;
+      text-align: center;
+      padding: 20px;
+    }
+    .lab {
+      max-width: 600px;
+      margin: 30px auto;
+      padding: 25px;
+      background: #152a40;
+      border-radius: 16px;
+    }
+    .tube {
+      width: 120px;
+      height: 200px;
+      border: 4px solid #b9eeff;
+      border-top: 0;
+      border-radius: 0 0 25px 25px;
+      margin: 25px auto;
+      position: relative;
+      overflow: hidden;
+    }
+    .liquid {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 60%;
+      background: #71dfff44;
+      transition: 0.8s;
+    }
+    .precipitate {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      height: 0;
+      background: #ffffff;
+      opacity: 0.9;
+      transition: 0.8s;
+    }
+    button {
+      padding: 12px;
+      margin: 5px;
+      border: 0;
+      border-radius: 8px;
+      background: #159dcc;
+      color: white;
+      cursor: pointer;
+    }
+    #result { line-height: 1.7; }
+  </style>
+</head>
+<body>
+  <h1>⚗ Phòng thí nghiệm Hóa học</h1>
+  <div class="lab">
+    <h2>MgSO₄ – NaOH – H₂SO₄</h2>
 
+    <div class="tube">
+      <div class="liquid" id="liquid" style="height:0"></div>
+      <div class="precipitate" id="solid"></div>
+    </div>
+
+    <button onclick="addMg()">1. Thêm MgSO₄</button>
+    <button onclick="addNaOH()">2. Thêm NaOH</button>
+    <hr>
+    <h3>Chọn một nhánh riêng</h3>
+    <button onclick="addAcid()">Nhánh A: Thêm H₂SO₄</button>
+    <button onclick="addExcessBase()">Nhánh B: Thêm NaOH dư</button>
+    <button onclick="resetLab()">Làm lại</button>
+
+    <div id="result">Bắt đầu thí nghiệm bằng cách thêm MgSO₄.</div>
+  </div>
+
+<script>
+  let step = 0;
+  let branch = null;
+
+  function addMg() {
+    if (step !== 0) return;
+    step = 1;
+    document.getElementById("liquid").style.height = "60%";
+    document.getElementById("result").innerHTML =
+      "Đã thêm MgSO₄. Dung dịch mô phỏng trong suốt.";
+  }
+
+  function addNaOH() {
+    if (step !== 1) return;
+    step = 2;
+    document.getElementById("solid").style.height = "35%";
+    document.getElementById("result").innerHTML =
+      "Xuất hiện kết tủa trắng Mg(OH)₂.<br>" +
+      "MgSO₄ + 2NaOH → Mg(OH)₂↓ + Na₂SO₄";
+  }
+
+  function addAcid() {
+    if (step !== 2 || branch !== null) return;
+    branch = "acid";
+    document.getElementById("solid").style.height = "0";
+    document.getElementById("result").innerHTML =
+      "Nhánh A: kết tủa tan dần.<br>" +
+      "Mg(OH)₂ + H₂SO₄ → MgSO₄ + 2H₂O";
+  }
+
+  function addExcessBase() {
+    if (step !== 2 || branch !== null) return;
+    branch = "base";
+    document.getElementById("result").innerHTML =
+      "Nhánh B: kết tủa trắng vẫn còn khi thêm NaOH dư " +
+      "trong điều kiện thông thường.<br>" +
+      "Mg²⁺ + 2OH⁻ → Mg(OH)₂↓";
+  }
+
+  function resetLab() {
+    step = 0;
+    branch = null;
+    document.getElementById("liquid").style.height = "0";
+    document.getElementById("solid").style.height = "0";
+    document.getElementById("result").textContent =
+      "Bắt đầu thí nghiệm bằng cách thêm MgSO₄.";
+  }
+</script>
+</body>
+</html>
